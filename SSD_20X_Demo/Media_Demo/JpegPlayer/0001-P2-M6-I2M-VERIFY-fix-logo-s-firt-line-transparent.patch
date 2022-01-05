@@ -1,0 +1,44 @@
+From 8a7744b2f88fb4d3665215d14e0859b32138dc2b Mon Sep 17 00:00:00 2001
+From: "yongliang.li" <yongliang.li@sigmastar.com.cn>
+Date: Mon, 27 Apr 2020 20:32:31 +0800
+Subject: [PATCH] [P2/M6/I2M][VERIFY] fix logo's firt line transparent
+
+[Description]
+
+[ticket] = mantis_123456
+
+Change-Id: If277d43af288f889183f399fc27e550a069f8f7d
+---
+ verify/application/logo/jpeg/jpeg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/verify/application/logo/jpeg/jpeg.c b/verify/application/logo/jpeg/jpeg.c
+index 2fe832b..eeeb6a7 100755
+--- a/verify/application/logo/jpeg/jpeg.c
++++ b/verify/application/logo/jpeg/jpeg.c
+@@ -187,11 +187,11 @@ static void compilergba_bitmap_sl(HDC hdc, BYTE *bits, BYTE *alpha_mask, MYBITMA
+ }
+ #endif
+ 
+-void _load_bitmap_sl(BITMAP *fb, BITMAP *logo, int y)
++void _load_bitmap_sl(BITMAP *fb, BITMAP *logo)
+ {
+     MI_U8 *src_bits, *dst_bits;
+     src_bits = logo->bmBits;
+-    dst_bits = fb->bmBits + fb->bmPitch * y;
++    dst_bits = fb->bmBits;
+ 
+     switch(logo->bmBytesPerPixel) {
+ 
+@@ -277,7 +277,7 @@ int load_JPEG_file(BITMAP *fb, BITMAP *logo, struct jpeg_decompress_struct *cinf
+         (void) jpeg_read_scanlines(cinfo, buffer, 1);
+         /* Assume put_scanline_someplace wants a pointer and sample count. */
+         logo->bmBits = buffer[0];
+-        _load_bitmap_sl(fb, logo, 1);
++        _load_bitmap_sl(fb, logo);
+         //fwrite(fb->bmBits, fb->bmPitch, 1, fp);
+         //memcpy(fb->bmBits, buffer[0], row_stride);
+         fb->bmBits += fb->bmPitch;
+-- 
+2.7.4
+
